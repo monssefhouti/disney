@@ -9,21 +9,23 @@ import Login from "./components/Login";
 function App() {
   return (
     <div className="App">
+
         <Router>
             <Header />
+
             <Switch>
 
-                <Route path="/signin">
-                    <Login />
+                <Route path="/home" exect={true} component={Home}>
+                    <Home />
                 </Route>
                 <Route path="/details/:id">
                     <Details />
                 </Route>
-                <Route path="/">
-                    <Home />
-                </Route>
+                <Login />
+
 
             </Switch>
+
         </Router>
 
     </div>
