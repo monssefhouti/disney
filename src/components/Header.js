@@ -1,40 +1,95 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import styled from 'styled-components'
+import {SelectUsername, SelectUserPic, setSignOut, setUserLogin} from "../features/user/userslice";
+import {useSelector,useDispatch} from "react-redux";
+import {auth,provider} from "../firebase";
+import {useHistory} from "react-router-dom";
+
 function Header() {
+    const dispatch=useDispatch();
+    const history=useHistory()
+    const userName=useSelector(SelectUsername);
+    const userPic=useSelector(SelectUserPic);
+    useEffect(()=>{
+        auth.onAuthStateChanged(async (user) =>{
+            if(user)
+            {
+                dispatch(setUserLogin({
+                    name:user.displayName,
+                    email:user.email,
+                    photo:user.photoURL
+                }))
+                history.push("/");
+            }
+        })
+    },[])
+    const singIn=()=>{
+            auth.signInWithPopup(provider)
+                .then((result ) =>{
+
+                    let user=result.user;
+                    dispatch(setUserLogin({
+                        name:user.displayName,
+                        email:user.email,
+                        photo:user.photoURL
+                    }))
+                    history.push("/");
+
+                })
+    }
+
+    const singOut= ()=>{
+        auth.signOut().then(() =>{
+            dispatch(setSignOut());
+            history.push("/signin")
+        })
+    }
     return (
         <Nav>
             <Logo src="/images/logo.svg"/>
-            <NavManu>
-                <a href="/">
-                    <img src="/images/home-icon.svg" alt=""/>
-                    <span>Home</span>
-                </a>
+            {
+                !userName ?(
 
-                <a href="/">
-                    <img src="/images/search-icon.svg" alt=""/>
-                    <span>Search</span>
-                </a>
+                        <LoginContainer>
+                                <Login onClick={singIn}>Login</Login>
+                        </LoginContainer>
 
-                <a href="/">
-                    <img src="/images/watchlist-icon.svg" alt=""/>
-                    <span>WatchList</span>
-                </a>
+                    ):
+                <>
+                    <NavManu>
+                        <a href="/">
+                            <img src="/images/home-icon.svg" alt=""/>
+                            <span>Home</span>
+                        </a>
 
-                <a href="/">
-                    <img src="/images/original-icon.svg" alt=""/>
-                    <span>Originals</span>
-                </a>
-                <a href="/">
-                    <img src="/images/movie-icon.svg" alt=""/>
-                    <span>Movies</span>
-                </a>
-                <a href="/">
-                    <img src="/images/series-icon.svg" alt=""/>
-                    <span>Tv Shows</span>
-                </a>
-            </NavManu>
+                        <a href="/">
+                            <img src="/images/search-icon.svg" alt=""/>
+                            <span>Search</span>
+                        </a>
 
-            <UserImg src="/images/profil.png" alt=""/>
+                        <a href="/">
+                            <img src="/images/watchlist-icon.svg" alt=""/>
+                            <span>WatchList</span>
+                        </a>
+
+                        <a href="/">
+                            <img src="/images/original-icon.svg" alt=""/>
+                            <span>Originals</span>
+                        </a>
+                        <a href="/">
+                            <img src="/images/movie-icon.svg" alt=""/>
+                            <span>Movies</span>
+                        </a>
+                        <a href="/">
+                            <img src="/images/series-icon.svg" alt=""/>
+                            <span>Tv Shows</span>
+                        </a>
+                    </NavManu>
+                        <UserImg onClick={singOut} src={userPic} alt=""/>
+                    {/*<UserImg onClick={singOut} src="/images/profil.png" alt=""/>*/}
+                 </>
+            }
+
 
             
         </Nav>
@@ -52,6 +107,7 @@ display:flex;
 align-items:center;
 padding:0 36px; // 0 means(top and bottom ) and 36px means(left and right)
 overflow-x:hidden;
+
 `
 const Logo = styled.img `
 width : 80px;
@@ -101,6 +157,15 @@ a
                 opacity:1;
             }
         }
+
+  @media screen and (max-width:900px) and (min-width:768px)
+  {
+    display: none;
+  }
+  @media screen and (max-width:768px) and (min-width:500px)
+  {
+    display: none;
+  }
 }
 `
 const UserImg=styled.img `
@@ -108,7 +173,32 @@ const UserImg=styled.img `
     height:50px;
     border-radius:50%;
     cursor:pointer;
-    border:2px solid white;
+  }
+    
+`
+const Login=styled.button`
+    display: flex;
+    background-color: transparent;
+    border-radius: 3px;
+    border: 2px solid white;
+    font-size: 18px;
+    padding: 8px 16px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+  
+  &:hover
+  {
+    background-color:whitesmoke;
+    color:black;
+    border:transparent;
+  }
+`
+const LoginContainer=styled.div`
+display: flex;
+  flex: 1;
+  justify-content: flex-end;
 `
 
 //#endregion

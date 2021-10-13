@@ -13,6 +13,7 @@ function Login() {
                 <Terms>
                     By Clicking, You Agree with our <a href="/">Terms of Conditions</a> and <a href="/">Privacy Policy</a>
                 </Terms>
+                <SecondLogo src="/images/cta-logo-two.png"/>
             </CTA>
 
         </Container>
@@ -39,6 +40,7 @@ const Container = styled.div `
     background-image: url("/images/login-background.jpg");
     background-position: center;
     background-repeat: no-repeat;
+    opacity: 0.5;
     background-size: cover;
     z-index: -1;
   }
@@ -61,17 +63,24 @@ const SignupButton=styled.button `
     width: 100%;
     padding: 15px 0px;
     letter-spacing: 2px;
-  cursor: pointer;
-  border:none;
+    cursor: pointer;
+    border:none;
   
   &:hover
   {
     background-color: rgba(0,99,229,0.8);
   }
+  
 `
+
 const Terms=styled.div`
   text-align: center;
-  padding-top: 3px;
+  margin-top: 10px;
+`
+
+const SecondLogo=styled.img`
+  width: 100%;
+  margin-top: 10px;
 `
 
 //#endregion

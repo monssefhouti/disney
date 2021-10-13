@@ -1,36 +1,64 @@
 import React from 'react';
 import styled from "styled-components";
+import {useEffect,useState} from "react";
+import {useParams} from "react-router-dom";
+import database from "../firebase";
+
 function Details() {
+    const { id } = useParams();
+    const [movieData,setMovieData] = useState([]) // its important to initialize the usestate
+    useEffect(() =>{
+        // grab the movie info from db
+        database.collection("movies")
+            .doc(id)
+            .get()
+            .then((doc) =>{
+            if(doc.exists)
+            {
+                //save the movie data
+                setMovieData(doc.data());
+            }
+            else {
+                // redirect to home page
+            }
+        })
+    },[id])
+
     return (
         <Container>
-            <Background>
-                <img src="/images/avengersbackground.jpg" />
-            </Background>
-            <ImgTitle>
-                <img src="/images/avangerstitle.png"/>
-            </ImgTitle>
-            <Controls>
-                <PlayButton>
-                    <img src="/images/play-icon-black.png"/>
-                    <span>Play</span>
-                </PlayButton>
-                <TrailerButton>
-                    <img src="/images/play-icon-white.png"/>
-                    <span>Trailer</span>
-                </TrailerButton>
-                <AddButton>
-                    <img src="/images/watchlist-icon.svg"/>
-                </AddButton>
-                <GroupWatchButton>
-                    <img src="/images/group-icon.png"/>
-                </GroupWatchButton>
-            </Controls>
-            <SubTitle>
-                2019 - Action,Adventures
-            </SubTitle>
-            <Description>
-                Earth's Mightiest Heroes stand as the planet's first line of defense against the most powerful threats in the universe. The Avengers began as a group of extraordinary individuals who were assembled to defeat Loki and his Chitauri army in New York City.
-            </Description>
+            {movieData && (
+                <>
+                    <Background>
+                        <img src={movieData.backgroundImg} />
+                    </Background>
+                    <ImgTitle>
+                        <img src={movieData.titleImg}/>
+                    </ImgTitle>
+                    <Controls>
+                        <PlayButton>
+                            <img src="/images/play-icon-black.png"/>
+                            <span>Play</span>
+                        </PlayButton>
+                        <TrailerButton>
+                            <img src="/images/play-icon-white.png"/>
+                            <span>Trailer</span>
+                        </TrailerButton>
+                        <AddButton>
+                            <img src="/images/watchlist-icon.svg"/>
+                        </AddButton>
+                        <GroupWatchButton>
+                            <img src="/images/group-icon.png"/>
+                        </GroupWatchButton>
+                    </Controls>
+                    <SubTitle>
+                        {movieData.subTitle}
+                    </SubTitle>
+                    <Description>
+                        {movieData.description}
+                    </Description>
+                </>
+            )}
+
         </Container>
     );
 }
@@ -41,7 +69,11 @@ export default Details;
 const Container=styled.div `
     min-height: calc(100vh - 70px);
     padding: 0 calc(3.5vw + 5px);
-  position: relative;
+    position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `
 const Background=styled.div`
   position: fixed;
@@ -60,14 +92,15 @@ const Background=styled.div`
   }
 `
 const ImgTitle=styled.div`
+  display: flex;
   height:30vh;
-  min-height:170px ;
+  margin-top: 10vh;
   width: 30vw;
   align-items: center;
-  display: flex;
   min-width: 200px;
   img
   {
+    
     width:100%;
     height: 100%;
     object-fit: contain;
@@ -138,12 +171,13 @@ const GroupWatchButton=styled(AddButton) `
 
 const SubTitle=styled.div`
   display: flex;
-  padding:5px 60px 0px;
+  padding:20px 60px 0px;
 `
 const Description=styled(SubTitle)`
-  width: 80vw;
+  max-width: 40vw;
+  text-align: justify;
   line-height: 1.5;
-  margin-top: 5px;
+
 `
 
 
