@@ -9,12 +9,9 @@ import Login from "./components/Login";
 function App() {
   return (
     <div className="App">
-
         <Router>
             <Header />
-
             <Switch>
-
                 <Route path="/home" exect={true} component={Home}>
                     <Home />
                 </Route>
@@ -22,12 +19,8 @@ function App() {
                     <Details />
                 </Route>
                 <Login />
-
-
             </Switch>
-
         </Router>
-
     </div>
   );
 }
